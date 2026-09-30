@@ -73,7 +73,7 @@ $ ssh russoski@172.17.0.2
 ==russoski@a1919dfe5717:~$==
 ```
 
-## Fase 5: Escalada de privilegios · sudo Vim {root}
+## Fase 5 · Final: Escalada de privilegios · sudo Vim {root}
 russoski → root
 
 Revisamos los permisos de `sudo`:

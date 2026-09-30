@@ -60,7 +60,7 @@ def highlight_terminal_line(line):
         return f'{indent}<span class="p">{prompt_symbol}</span> <span class="c">{cmd}</span>{comment_part}'
     
     # Highlights: ==highlight==
-    line = re.sub(r"(?<!=)==(?!=)(.+?)(?<!=)==(?!=)", r'<span class="hl">\1</span>', line)
+    line = re.sub(r"(?<![=&])==(?![=&])(.+?)(?<![=&])==(?![=&])", r'<span class="hl">\1</span>', line)
     
     return line + comment_part
 
@@ -186,8 +186,13 @@ def process_phases(body):
         found_sub = False
         for l in rest_lines:
             if not found_sub and l.strip():
-                if "·" in l or "→" in l or "->" in l or l.startswith("sub:"):
-                    phase_sub = l.replace("sub:", "").replace("->", "→").strip()
+                stripped = l.strip()
+                # Check if line looks like a subtitle: has symbol (· or →) or is a short tagline without a trailing dot
+                is_sub = ("·" in stripped or "→" in stripped or "->" in stripped or 
+                          stripped.startswith("sub:") or 
+                          (len(stripped) < 65 and not stripped.endswith(".") and not stripped.startswith(("$", "#", ">", "`", ":::"))))
+                if is_sub:
+                    phase_sub = stripped.replace("sub:", "").replace("->", "→").strip()
                     found_sub = True
                     continue
                 else:
