@@ -11,6 +11,23 @@ STATIC_DIR = BASE_DIR / "static"
 OUTPUT_DIR = BASE_DIR / "dist"
 CONFIG_FILE = BASE_DIR / "config.yaml"
 
+def normalize_difficulty(val):
+    if not val:
+        return "Media"
+    clean = str(val).strip().lower()
+    clean = clean.replace("á", "a").replace("í", "i")
+    if "muy" in clean and "facil" in clean:
+        return "Muy fácil"
+    elif "facil" in clean:
+        return "Fácil"
+    elif "med" in clean:
+        return "Media"
+    elif "dificil" in clean:
+        return "Difícil"
+    elif "insane" in clean:
+        return "Insane"
+    return str(val).strip()
+
 def load_config():
     default_config = {
         "title": "Portafolio de Writeups",
@@ -248,6 +265,7 @@ def build_tree_toc(machines, current_slug=None):
     
     dif_classes = {
         "Muy fácil": "dif-muy-facil",
+        "Muy Fácil": "dif-muy-facil",
         "Facil": "dif-facil",
         "Fácil": "dif-facil",
         "Medio": "dif-medio",
@@ -369,6 +387,7 @@ def build_index_page(all_machines, config):
     
     dif_classes = {
         "Muy fácil": "dif-muy-facil",
+        "Muy Fácil": "dif-muy-facil",
         "Facil": "dif-facil",
         "Fácil": "dif-facil",
         "Medio": "dif-medio",
@@ -495,6 +514,7 @@ def main():
         meta, body = parse_frontmatter(raw)
         slug = md_file.stem
         meta["slug"] = slug
+        meta["difficulty"] = normalize_difficulty(meta.get("difficulty", "Media"))
         if "title" not in meta:
             meta["title"] = slug.replace("-", " ").title()
         all_machines.append(meta)

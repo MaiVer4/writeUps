@@ -1,8 +1,8 @@
 ---
-title: MetaSploitable2 # O el nombre de tu contenedor/laboratorio
+title: FirstHacking
 platform: DockerLabs
 os: Linux
-difficulty: Muy Fácil
+difficulty: Muy fácil
 ip: 172.17.0.2
 services: 21/tcp (FTP)
 hops: 1

